@@ -163,15 +163,24 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    if(accumulator || accumulator === 0) {
+    if(accumulator !== undefined) {
       _.each(collection, function(value) {
           accumulator = iterator(accumulator, value);
         });
         return accumulator;
-    } else {
-      var workArray = collection.slice(0);
-      accumulator = workArray.shift();
-      _.each(workArray, function(value) {
+    } else if(Array.isArray(collection)) {
+      accumulator = collection[0];
+      _.each(collection, function(value, index) {
+        if(index !== 0) {
+          accumulator = iterator(accumulator, value);
+        }
+      });
+      return accumulator;
+    } else if(typeof collection === "object") {
+      var workObject = JSON.parse(JSON.stringify(collection));
+      accumulator = workObject[Object.keys(workObject)[0]];
+      delete workObject[Object.keys(collection)[0]];
+      _.each(workObject, function(value) {
         accumulator = iterator(accumulator, value);
       });
       return accumulator;
