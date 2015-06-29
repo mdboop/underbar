@@ -177,11 +177,11 @@
       });
       return accumulator;
     } else if(typeof collection === "object") {
-      var workObject = JSON.parse(JSON.stringify(collection));
-      accumulator = workObject[Object.keys(workObject)[0]];
-      delete workObject[Object.keys(collection)[0]];
-      _.each(workObject, function(value) {
-        accumulator = iterator(accumulator, value);
+      accumulator = collection[Object.keys(collection)[0]];
+      _.each(collection, function(value, key) {
+        if(Object.keys(collection)[0] !== key) {
+          accumulator = iterator(accumulator, value);
+        }
       });
       return accumulator;
     }
