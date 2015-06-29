@@ -100,6 +100,15 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    var uniqueArray = array.slice(0);
+    _.each(uniqueArray, function(value, index) {
+      _.each(uniqueArray, function(testValue, testIndex) {
+        if(value === testValue && index !== testIndex) {
+          uniqueArray.splice(testIndex,1);
+        }
+      });
+    });
+    return uniqueArray;
   };
 
 
