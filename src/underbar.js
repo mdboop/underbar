@@ -189,10 +189,7 @@
     // TIP: Try re-using reduce() here.
     iterator = iterator || _.identity;
     return _.reduce(collection, function(memo, item) {
-      if((iterator(item)) == false || item === undefined) {
-        memo = false;
-      }
-      return memo;
+      return iterator(item) ? memo : memo = false;
     }, true);
   };
 
@@ -201,9 +198,10 @@
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
     iterator = iterator || _.identity;
-    if(collection.length = 0) return false;
-    if(_.every(collection,iterator)) return true;
+    if(_.every(collection, function(value) { return !(iterator(value)); })) return false;
+    else return true;
   };
+  //_.some([1,2,3,4], function(value) { return val % 2 === 0;})
 
 
   /**
