@@ -81,7 +81,7 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
     var result = [];
-    _.each(collection, function(value) {
+    _.each(collection, function(value, index, collection) {
       if(test(value)) result.push(value);
     });
     return result;
@@ -118,8 +118,8 @@
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var result = [];
-    _.each(collection, function(value) {
-      result.push(iterator(value));
+    _.each(collection, function(value, index, collection) {
+      result.push(iterator(value, index));
     });
     return result;
   };
@@ -162,29 +162,13 @@
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
-  _.reduce = function(collection, iterator, accumulator) {
-    if(accumulator !== undefined) {
-      _.each(collection, function(value) {
-          accumulator = iterator(accumulator, value);
-        });
-        return accumulator;
-    } else if(Array.isArray(collection)) {
-      accumulator = collection[0];
-      _.each(collection, function(value, index) {
-        if(index !== 0) {
-          accumulator = iterator(accumulator, value);
-        }
-      });
-      return accumulator;
-    } else if(typeof collection === "object") {
-      accumulator = collection[Object.keys(collection)[0]];
-      _.each(collection, function(value, key) {
-        if(Object.keys(collection)[0] !== key) {
-          accumulator = iterator(accumulator, value);
-        }
-      });
-      return accumulator;
-    }
+   _.reduce = function(collection, iterator, accumulator) {
+    var keys = _.map(collection, function(_, index) { return index; });
+    arguments.length < 3 ? accumulator = collection[keys.shift()] : accumulator;
+    _.each(keys, function(item) { 
+      accumulator = iterator(accumulator, collection[item]);
+    });
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -216,6 +200,9 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    if(collection.length = 0) return false;
+    if(_.every(collection,iterator)) return true;
   };
 
 
