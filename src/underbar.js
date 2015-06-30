@@ -198,8 +198,7 @@
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
     iterator = iterator || _.identity;
-    if(_.every(collection, function(value) { return !(iterator(value)); })) return false;
-    else return true;
+    return _.every(collection, function(value) { return !(iterator(value)); }) ?  false : true;
   };
   //_.some([1,2,3,4], function(value) { return val % 2 === 0;})
 
