@@ -309,7 +309,7 @@
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
     var argumentsArray = Array.prototype.slice.call(arguments).slice(2);
-    setTimeout(function() { func.apply(null, argumentsArray); }, wait);
+    setTimeout(function() { func.apply(this, argumentsArray); }, wait);
   };
 
 
@@ -326,11 +326,9 @@
   _.shuffle = function(array) {
     var shuffleArray = array.slice(0);
     var counter = array.length - 1;
-    var randomIndex = null;
-    var temp = null;
+    var randomIndex, temp;
 
     while(counter >= 0) {
-
       randomIndex = Math.floor(counter * Math.random());
       temp = shuffleArray[counter];
       shuffleArray[counter] = shuffleArray[randomIndex];
