@@ -298,7 +298,7 @@
         }
       
       return result;
-    }
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -350,6 +350,15 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var result = collection.slice(0);
+    _.each(result, function(value, index) {
+      if(typeof functionOrKey === "function") {
+        result[index] = functionOrKey.apply(value, result);
+      } else {
+        result[index] = value[functionOrKey].apply(value, result);
+      }
+    });
+    return result;
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -372,6 +381,18 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var flattened = [];
+    var innie = function (collection) { 
+      _.each(collection, function(value) {
+        if(Array.isArray(value)) {
+          innie(value);
+        } else {
+          flattened.push(value);
+        }
+      });
+    };
+    innie(nestedArray);
+    return flattened;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
