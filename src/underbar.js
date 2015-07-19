@@ -353,9 +353,9 @@
     var result = collection.slice(0);
     _.each(result, function(value, index) {
       if(typeof functionOrKey === "function") {
-        result[index] = functionOrKey.apply(value, result);
+        result[index] = functionOrKey.apply(value, args);
       } else {
-        result[index] = value[functionOrKey].apply(value, result);
+        result[index] = value[functionOrKey].apply(value, args);
       }
     });
     return result;
@@ -374,6 +374,14 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var result = [];
+    var args = Array.prototype.slice.call(arguments);
+    _.each(args, function(value, index) {
+      _.each(value, function(item) {
+        result.push([value[index]]);
+      });
+    });
+    return result;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -382,22 +390,30 @@
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
     var flattened = [];
-    var innie = function (collection) { 
+    var innerFlatten = function (collection) { 
       _.each(collection, function(value) {
         if(Array.isArray(value)) {
-          innie(value);
+          innerFlatten(value);
         } else {
           flattened.push(value);
         }
       });
     };
-    innie(nestedArray);
+    innerFlatten(nestedArray);
     return flattened;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var result = [];
+    var argumentsArray = Array.prototype.slice.call(arguments);
+    _.each(argumentsArray, function(array, index) {
+      if(_.contains(array, array[index])) {
+        result.push(array[index]);
+      }
+    });
+    return result;
   };
 
   // Take the difference between one array and a number of other arrays.
