@@ -374,11 +374,19 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
-    var result = [];
     var args = Array.prototype.slice.call(arguments);
-    _.each(args, function(value, index) {
-      _.each(value, function(item) {
-        result.push([value[index]]);
+    var result = _.map(args.shift(), function(value) {
+      return [value];
+    });
+    _.each(args, function(array) {
+      if(array.length < result.length) {
+        array.length = result.length;
+      }
+      _.each(array, function(item, index) {
+        if(result[index] === undefined) {
+          result[index] = [undefined];
+        }
+        result[index].push(item);
       });
     });
     return result;
