@@ -449,18 +449,22 @@
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
     var argumentsArray = Array.prototype.slice.call(arguments);
-    return _.filter(argumentsArray[0], function(value, index) {
-      if(_.every(argumentsArray, function(item) {
+    return _.filter(argumentsArray[0], function(value) {
+      return _.every(argumentsArray, function(item) {
         return _.contains(item, value);
-      })) {
-        return(value);
-      }
+      });
     });
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var argumentsArray = Array.prototype.slice.call(arguments, 1);
+    return _.reject(array, function(value) {
+      return _.some(argumentsArray, function(item) {
+        return _.contains(item, value);
+      });
+    });
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
