@@ -365,15 +365,21 @@
   // If iterator is a string, sort objects by that property with the name
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
-  _.sortBy = function(collection, iterator) {
+   _.sortBy = function(collection, iterator) {
     var collectionCopy = collection.slice(0);
     var result = [];
-    if(typeof iterator === "string") {
+    var wrapper = function(value, func) {
+      if(typeof func === "string") {
+        return value[func];
+      } else {
+        return func(value);
+      }
+    };
       _.each(collectionCopy, function(value) {
         var smallest = _.reduce(collectionCopy, function(a,b) {
           if (a === undefined) {
             return b;
-          } else if (b[iterator] < a[iterator]) {
+          } else if (wrapper(b, iterator) < wrapper(a, iterator)) {
             return b;
           } else {
             return a;
@@ -383,22 +389,6 @@
         var i = _.indexOf(collectionCopy, smallest);
         collectionCopy.splice(i,1);
       });
-    } else {
-      _.each(collectionCopy, function(value) {
-        var smallest = _.reduce(collectionCopy, function(a,b) {
-          if (a === undefined) {
-            return b;
-          } else if (iterator(b) < iterator(a)) {
-            return b;
-          } else {
-            return a;
-          }
-        });
-      result.push(smallest);
-      var i = _.indexOf(collectionCopy, smallest);
-      collectionCopy.splice(i,1);
-      });
-    }
     return result;
   };
 
@@ -473,5 +463,19 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+
+    return function() {
+    var firstCall = true;
+
+    if(firstCall) {
+      firstCall = false;
+      return func.apply(this, arguments);
+    } else {
+      setTimeout(function() {
+        firstCall = true;
+        return func.apply(this, arguments);
+      }, wait);
+    }
+  };
   };
 }());
