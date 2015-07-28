@@ -463,19 +463,15 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
-
+    var unthrottled = true;
     return function() {
-    var firstCall = true;
-
-    if(firstCall) {
-      firstCall = false;
-      return func.apply(this, arguments);
-    } else {
-      setTimeout(function() {
-        firstCall = true;
+      if(unthrottled) {
+        unthrottled = false;
+        setTimeout(function() {
+          unthrottled = true;
+        }, wait);
         return func.apply(this, arguments);
-      }, wait);
-    }
-  };
+      } 
+    };
   };
 }());
