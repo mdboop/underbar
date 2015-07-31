@@ -287,7 +287,7 @@
     return function() {
 
       var args = Array.prototype.slice.call(arguments);
-      var argKey = args.toString();
+      var argKey = args;
       var result;
       
       if(argumentStore.hasOwnProperty(argKey)) {
