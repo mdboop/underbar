@@ -163,10 +163,12 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
    _.reduce = function(collection, iterator, accumulator) {
-    var keys = _.map(collection, function(_, index) { return index; });
-    arguments.length < 3 ? accumulator = collection[keys.shift()] : accumulator;
-    _.each(keys, function(item) { 
-      accumulator = iterator(accumulator, collection[item]);
+    _.each(collection, function(value, key, collection) { 
+      if(accumulator === undefined) {
+        accumulator = collection[key];
+      } else {
+        accumulator = iterator(accumulator, value);
+      }
     });
     return accumulator;
   };
